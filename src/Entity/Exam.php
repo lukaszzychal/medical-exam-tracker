@@ -19,22 +19,19 @@ class Exam
     #[ORM\Column(length: 255)]
     private string $name;
 
-    #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
-    private \DateTimeImmutable $createDt;
-
-    #[ORM\Column(type: Types::TEXT, nullable: true)]
-    private ?string $description;
-
     /** @var Collection<int, Parameter> */
     #[ORM\OneToMany(targetEntity: Parameter::class, mappedBy: 'exam', cascade: ['persist', 'remove'])]
     private Collection $parameters;
 
-    public function __construct(string $name, \DateTimeImmutable $createDt, ?string $description = null)
-    {
+    public function __construct(
+        string $name,
+        #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
+        private \DateTimeImmutable $createDt,
+        #[ORM\Column(type: Types::TEXT, nullable: true)]
+        private ?string $description = null,
+    ) {
         $this->id = new UuidV7();
         $this->setName($name);
-        $this->createDt = $createDt;
-        $this->description = $description;
         $this->parameters = new ArrayCollection();
     }
 

@@ -13,22 +13,19 @@ class Parameter
     #[ORM\Column(type: 'uuid', unique: true)]
     private UuidV7 $id;
 
-    #[ORM\ManyToOne(inversedBy: 'parameters')]
-    #[ORM\JoinColumn(nullable: false)]
-    private Exam $exam;
-
     #[ORM\Column(length: 255)]
     private string $name;
 
-    #[ORM\Column]
-    private float $value;
-
-    public function __construct(Exam $exam, string $name, float $value)
-    {
+    public function __construct(
+        #[ORM\ManyToOne(inversedBy: 'parameters')]
+        #[ORM\JoinColumn(nullable: false)]
+        private readonly Exam $exam,
+        string $name,
+        #[ORM\Column]
+        private float $value,
+    ) {
         $this->id = new UuidV7();
-        $this->exam = $exam;
         $this->setName($name);
-        $this->value = $value;
         $exam->addParameter($this);
     }
 
