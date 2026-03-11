@@ -1,0 +1,20 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Medical Exams{% endblock %}
+
+{% block body %}
+<div class="container mt-4">
+    <h1>Medical Exams</h1>
+    
+    <div class="list-group mt-3">
+        {% for exam in exams %}
+            <a href="{{ path('app_exam_show', {'id': exam.id}) }}" class="list-group-item list-group-item-action">
+                <h5 class="mb-1">{{ exam.name }}</h5>
+                <small>Created: {{ exam.createDt|date('Y-m-d H:i') }}</small>
+            </a>
+        {% else %}
+            <p>No exams found.</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
