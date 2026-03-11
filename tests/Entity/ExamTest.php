@@ -13,7 +13,7 @@ class ExamTest extends TestCase
         $now = new \DateTimeImmutable();
         $exam = new Exam('Blood Chemistry', $now);
 
-        $this->assertSame('Blood Chemistry', $exam->getName());
+        $this->assertSame('Blood Chemistry', $exam->name);
         $this->assertSame($now, $exam->createDt);
         $this->assertInstanceOf(UuidV7::class, $exam->id);
     }
@@ -51,6 +51,6 @@ class ExamTest extends TestCase
         $exam = new Exam('CBC', new \DateTimeImmutable());
 
         $this->expectException(\InvalidArgumentException::class);
-        $exam->setName('');
+        $exam->name = '';
     }
 }

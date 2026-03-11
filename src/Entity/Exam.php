@@ -15,8 +15,7 @@ class Exam
     public readonly UuidV7 $id;
 
     #[ORM\Column(length: 255)]
-    private string $name {
-        get => $this->name;
+    public string $name {
         set(string $value) {
             if ('' === trim($value)) {
                 throw new \InvalidArgumentException('Exam name cannot be empty.');
@@ -34,17 +33,5 @@ class Exam
     ) {
         $this->id = new UuidV7();
         $this->name = $name;
-    }
-
-    public function getName(): string
-    {
-        return $this->name;
-    }
-
-    public function setName(string $name): static
-    {
-        $this->name = $name;
-
-        return $this;
     }
 }
