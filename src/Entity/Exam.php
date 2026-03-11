@@ -14,32 +14,79 @@ class Exam
 {
     #[ORM\Id]
     #[ORM\Column(type: 'uuid', unique: true)]
-    public readonly UuidV7 $id;
+    private UuidV7 $id;
 
     #[ORM\Column(length: 255)]
-    public string $name {
-        set(string $value) {
-            if ('' === trim($value)) {
-                throw new \InvalidArgumentException('Exam name cannot be empty.');
-            }
-            $this->name = $value;
-        }
-    }
+    private string $name;
+
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
+    private \DateTimeImmutable $createDt;
+
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $description;
 
     /** @var Collection<int, Parameter> */
     #[ORM\OneToMany(targetEntity: Parameter::class, mappedBy: 'exam', cascade: ['persist', 'remove'])]
     private Collection $parameters;
 
-    public function __construct(
-        string $name,
-        #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
-        public \DateTimeImmutable $createDt,
-        #[ORM\Column(type: Types::TEXT, nullable: true)]
-        public ?string $description = null,
-    ) {
+    public function __construct(string $name, \DateTimeImmutable $createDt, ?string $description = null)
+    {
         $this->id = new UuidV7();
-        $this->name = $name;
+        $this->setName($name);
+        $this->createDt = $createDt;
+        $this->description = $description;
         $this->parameters = new ArrayCollection();
+    }
+
+    public function getId(): UuidV7
+    {
+        return $this->id;
+    }
+
+    public function getName(): string
+    {
+        return $this->name;
+    }
+
+    public function setName(string $name): static
+    {
+        if ('' === trim($name)) {
+            throw new \InvalidArgumentException('Exam name cannot be empty.');
+        }
+
+        $this->name = $name;
+
+        return $this;
+    }
+
+    public function getCreateDt(): \DateTimeImmutable
+    {
+        return $this->createDt;
+    }
+
+    public function setCreateDt(\DateTimeImmutable $createDt): static
+    {
+        $this->createDt = $createDt;
+
+        return $this;
+    }
+
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function setDescription(?string $description): static
+    {
+        $this->description = $description;
+
+        return $this;
+    }
+
+    /** @return Collection<int, Parameter> */
+    public function getParameters(): Collection
+    {
+        return $this->parameters;
     }
 
     public function addParameter(Parameter $parameter): void
@@ -47,11 +94,5 @@ class Exam
         if (!$this->parameters->contains($parameter)) {
             $this->parameters->add($parameter);
         }
-    }
-
-    /** @return Collection<int, Parameter> */
-    public function getParameters(): Collection
-    {
-        return $this->parameters;
     }
 }

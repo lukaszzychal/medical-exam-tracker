@@ -13,9 +13,9 @@ class ExamTest extends TestCase
         $now = new \DateTimeImmutable();
         $exam = new Exam('Blood Chemistry', $now);
 
-        $this->assertSame('Blood Chemistry', $exam->name);
-        $this->assertSame($now, $exam->createDt);
-        $this->assertInstanceOf(UuidV7::class, $exam->id);
+        $this->assertSame('Blood Chemistry', $exam->getName());
+        $this->assertSame($now, $exam->getCreateDt());
+        $this->assertInstanceOf(UuidV7::class, $exam->getId());
     }
 
     public function testExamIdIsGeneratedAutomaticallyOnCreation(): void
@@ -23,21 +23,21 @@ class ExamTest extends TestCase
         $examA = new Exam('CBC', new \DateTimeImmutable());
         $examB = new Exam('Urinalysis', new \DateTimeImmutable());
 
-        $this->assertNotEquals($examA->id, $examB->id);
+        $this->assertNotEquals($examA->getId(), $examB->getId());
     }
 
     public function testExamDescriptionIsNullableByDefault(): void
     {
         $exam = new Exam('Urinalysis', new \DateTimeImmutable());
 
-        $this->assertNull($exam->description);
+        $this->assertNull($exam->getDescription());
     }
 
     public function testExamDescriptionCanBeSet(): void
     {
         $exam = new Exam('Complete Blood Count', new \DateTimeImmutable(), 'Full blood panel analysis');
 
-        $this->assertSame('Full blood panel analysis', $exam->description);
+        $this->assertSame('Full blood panel analysis', $exam->getDescription());
     }
 
     public function testExamNameCannotBeEmpty(): void
@@ -51,6 +51,6 @@ class ExamTest extends TestCase
         $exam = new Exam('CBC', new \DateTimeImmutable());
 
         $this->expectException(\InvalidArgumentException::class);
-        $exam->name = '';
+        $exam->setName('');
     }
 }

@@ -20,9 +20,9 @@ class ParameterTest extends TestCase
     {
         $parameter = new Parameter($this->exam, 'Iron', 12.5);
 
-        $this->assertSame('Iron', $parameter->name);
-        $this->assertSame(12.5, $parameter->value);
-        $this->assertInstanceOf(UuidV7::class, $parameter->id);
+        $this->assertSame('Iron', $parameter->getName());
+        $this->assertSame(12.5, $parameter->getValue());
+        $this->assertInstanceOf(UuidV7::class, $parameter->getId());
     }
 
     public function testParameterIdIsGeneratedAutomaticallyOnCreation(): void
@@ -30,14 +30,14 @@ class ParameterTest extends TestCase
         $parameterA = new Parameter($this->exam, 'Iron', 12.5);
         $parameterB = new Parameter($this->exam, 'Calcium', 9.5);
 
-        $this->assertNotEquals($parameterA->id, $parameterB->id);
+        $this->assertNotEquals($parameterA->getId(), $parameterB->getId());
     }
 
     public function testParameterBelongsToExam(): void
     {
         $parameter = new Parameter($this->exam, 'Iron', 12.5);
 
-        $this->assertSame($this->exam, $parameter->exam);
+        $this->assertSame($this->exam, $parameter->getExam());
     }
 
     public function testExamCollectsAddedParameters(): void
