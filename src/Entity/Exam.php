@@ -12,27 +12,28 @@ class Exam
 {
     #[ORM\Id]
     #[ORM\Column(type: 'uuid', unique: true)]
-    private UuidV7 $id;
+    public readonly UuidV7 $id;
 
     #[ORM\Column(length: 255)]
-    private string $name;
-
-    #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
-    private \DateTimeImmutable $createDt;
-
-    #[ORM\Column(type: Types::TEXT, nullable: true)]
-    private ?string $description = null;
-
-    public function __construct(string $name, \DateTimeImmutable $createDt)
-    {
-        $this->id = new UuidV7();
-        $this->setName($name);
-        $this->createDt = $createDt;
+    private string $name {
+        get => $this->name;
+        set(string $value) {
+            if ('' === trim($value)) {
+                throw new \InvalidArgumentException('Exam name cannot be empty.');
+            }
+            $this->name = $value;
+        }
     }
 
-    public function getId(): UuidV7
-    {
-        return $this->id;
+    public function __construct(
+        string $name,
+        #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
+        public \DateTimeImmutable $createDt,
+        #[ORM\Column(type: Types::TEXT, nullable: true)]
+        public ?string $description = null,
+    ) {
+        $this->id = new UuidV7();
+        $this->name = $name;
     }
 
     public function getName(): string
@@ -42,35 +43,7 @@ class Exam
 
     public function setName(string $name): static
     {
-        if ('' === trim($name)) {
-            throw new \InvalidArgumentException('Exam name cannot be empty.');
-        }
-
         $this->name = $name;
-
-        return $this;
-    }
-
-    public function getCreateDt(): \DateTimeImmutable
-    {
-        return $this->createDt;
-    }
-
-    public function setCreateDt(\DateTimeImmutable $createDt): static
-    {
-        $this->createDt = $createDt;
-
-        return $this;
-    }
-
-    public function getDescription(): ?string
-    {
-        return $this->description;
-    }
-
-    public function setDescription(?string $description): static
-    {
-        $this->description = $description;
 
         return $this;
     }
