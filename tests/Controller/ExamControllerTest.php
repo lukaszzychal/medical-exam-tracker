@@ -19,10 +19,6 @@ class ExamControllerTest extends WebTestCase
 
         $this->client = static::createClient();
         $this->entityManager = self::getContainer()->get('doctrine')->getManager();
-
-        // Clean up database before each test
-        $this->entityManager->createQuery('DELETE FROM App\Entity\Parameter')->execute();
-        $this->entityManager->createQuery('DELETE FROM App\Entity\Exam')->execute();
     }
 
     public function testIndexDisplaysExamsAndReturns200(): void
