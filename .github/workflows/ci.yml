@@ -61,8 +61,10 @@ jobs:
         bin/console doctrine:database:create --env=test --if-not-exists
         bin/console doctrine:migrations:migrate --env=test --no-interaction
 
-    - name: Build SCSS
-      run: bin/console sass:build
+    - name: Build Assets (SCSS & ImportMap)
+      run: |
+        bin/console importmap:install
+        bin/console sass:build
 
     - name: Run Tests (PHPUnit)
       env:
