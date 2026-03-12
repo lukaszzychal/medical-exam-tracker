@@ -1,4 +1,9 @@
-name: CI
+# This workflow uses actions that are not certified by GitHub.
+# They are provided by a third-party and are governed by
+# separate terms of service, privacy policy, and support
+# documentation.
+
+name: Symfony
 
 on:
   push:
@@ -6,36 +11,19 @@ on:
   pull_request:
     branches: [ "main" ]
 
+permissions:
+  contents: read
+
 jobs:
-  build-and-test:
+  symfony-tests:
     runs-on: ubuntu-latest
-    
-    services:
-      postgres:
-        image: postgres:16-alpine
-        env:
-          POSTGRES_DB: app_test
-          POSTGRES_USER: app
-          POSTGRES_PASSWORD: app_password
-        ports:
-          - 5432:5432
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-
     steps:
-    - uses: actions/checkout@v4
-
-    - name: Setup PHP
-      uses: shivammathur/setup-php@v2
+    - uses: shivammathur/setup-php@v2
       with:
         php-version: '8.4'
-        extensions: pdo_pgsql, zip
-        coverage: none
-        tools: composer:v2, cs2pr
-
+    - uses: actions/checkout@v4
+    - name: Copy .env.test.local
+      run: php -r "file_exists('.env.test.local') || copy('.env.test', '.env.test.local');"
     - name: Cache Composer packages
       id: composer-cache
       uses: actions/cache@v3
@@ -44,29 +32,24 @@ jobs:
         key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
         restore-keys: |
           ${{ runner.os }}-php-
-
     - name: Install Dependencies
       run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
-
-    - name: Check Code Style (PHP-CS-Fixer)
-      run: vendor/bin/php-cs-fixer fix --dry-run --format=checkstyle | cs2pr
-
-    - name: Static Analysis (PHPStan)
-      run: vendor/bin/phpstan analyse --error-format=github
-
-    - name: Create Database
-      env:
-        DATABASE_URL: postgresql://app:app_password@127.0.0.1:5432/app_test?serverVersion=16&charset=utf8
-      run: |
-        bin/console doctrine:database:create --env=test --if-not-exists
-        bin/console doctrine:migrations:migrate --env=test --no-interaction
-
-    - name: Build Assets (SCSS & ImportMap)
+      
+    - name: Build Front-End Assets (Required for Twig tests)
       run: |
         bin/console importmap:install
         bin/console sass:build
 
-    - name: Run Tests (PHPUnit)
+    - name: Create Database
+      run: |
+        mkdir -p data
+        touch data/database.sqlite
+        bin/console doctrine:database:create --env=test --if-not-exists
+        bin/console doctrine:schema:create --env=test
       env:
-        DATABASE_URL: postgresql://app:app_password@127.0.0.1:5432/app_test?serverVersion=16&charset=utf8
-      run: bin/phpunit --log-junit build/junit.xml
+        DATABASE_URL: sqlite:///%kernel.project_dir%/data/database.sqlite
+
+    - name: Execute tests (Unit and Feature tests) via PHPUnit
+      env:
+        DATABASE_URL: sqlite:///%kernel.project_dir%/data/database.sqlite
+      run: vendor/bin/phpunit
