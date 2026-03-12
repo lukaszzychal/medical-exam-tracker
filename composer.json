@@ -95,7 +95,8 @@
         "phpstan": "docker compose exec php vendor/bin/phpstan analyse",
         "cs:check": "docker compose exec php vendor/bin/php-cs-fixer fix --dry-run --diff",
         "cs:fix": "docker compose exec php vendor/bin/php-cs-fixer fix",
-        "db:migrate": "docker compose exec php bin/console doctrine:migrations:migrate --no-interaction"
+        "db:migrate": "docker compose exec php bin/console doctrine:migrations:migrate --no-interaction",
+        "db:fixtures": "docker compose exec php bin/console doctrine:fixtures:load --no-interaction"
     },
     "conflict": {
         "symfony/symfony": "*"
