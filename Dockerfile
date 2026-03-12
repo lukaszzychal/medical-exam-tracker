@@ -9,9 +9,9 @@ RUN apk add --no-cache \
     zip \
     unzip \
     && docker-php-ext-install \
-        intl \
-        pdo_pgsql \
-        opcache \
+    intl \
+    pdo_pgsql \
+    opcache \
     && docker-php-ext-enable opcache
 
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer

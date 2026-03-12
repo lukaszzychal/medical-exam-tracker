@@ -4,10 +4,11 @@ namespace App\Controller;
 
 use App\Entity\Exam;
 use App\Repository\ExamRepository;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\{Request, Response};
-use Symfony\Component\Routing\Attribute\Route;
 use App\Service\ParameterManager;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Attribute\Route;
 
 class ExamController extends AbstractController
 {

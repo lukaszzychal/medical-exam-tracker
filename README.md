@@ -4,7 +4,7 @@
 
 ## 🇬🇧 English Version
 
-A medical application for tracking exams and parameters, based on the latest technology stack: PHP 8.4 and Symfony 8.
+A medical application for tracking exams and parameters, based on the latest technology stack: PHP 8.5 and Symfony 8.0.7.
 
 ### Features
 * Medical exams management (Exam)
@@ -16,7 +16,7 @@ A medical application for tracking exams and parameters, based on the latest tec
 
 ### Requirements
 * Docker & Docker Compose
-* (Optional) PHP 8.4 on local machine
+* (Optional) PHP 8.5 on local machine
 
 ### Setup Instructions (Local/Docker)
 
@@ -47,7 +47,7 @@ The application will be available at: [http://localhost:8000](http://localhost:8
 
 ## 🇵🇱 Polska Wersja
 
-Aplikacja medyczna do śledzenia badań oraz parametrów, oparta o najnowszy stack technologiczny PHP 8.4 i Symfony 8.
+Aplikacja medyczna do śledzenia badań oraz parametrów, oparta o najnowszy stack technologiczny PHP 8.5 i Symfony 8.0.7.
 
 ### Funkcjonalności
 * Zarządzanie badaniami medycznymi (Exam)
