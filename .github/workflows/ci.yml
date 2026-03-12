@@ -1,0 +1,67 @@
+name: CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_DB: app_test
+          POSTGRES_USER: app
+          POSTGRES_PASSWORD: !ChangeMe!
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '8.4'
+        extensions: pdo_pgsql, zip
+        coverage: none
+        tools: composer:v2, cs2pr
+
+    - name: Cache Composer packages
+      id: composer-cache
+      uses: actions/cache@v3
+      with:
+        path: vendor
+        key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-php-
+
+    - name: Install Dependencies
+      run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
+
+    - name: Check Code Style (PHP-CS-Fixer)
+      run: vendor/bin/php-cs-fixer fix --dry-run --format=checkstyle | cs2pr
+
+    - name: Static Analysis (PHPStan)
+      run: vendor/bin/phpstan analyse --error-format=github
+
+    - name: Create Database
+      env:
+        DATABASE_URL: postgresql://app:!ChangeMe!@127.0.0.1:5432/app_test?serverVersion=16&charset=utf8
+      run: |
+        bin/console doctrine:database:create --env=test --if-not-exists
+        bin/console doctrine:migrations:migrate --env=test --no-interaction
+
+    - name: Run Tests (PHPUnit)
+      env:
+        DATABASE_URL: postgresql://app:!ChangeMe!@127.0.0.1:5432/app_test?serverVersion=16&charset=utf8
+      run: bin/phpunit --log-junit build/junit.xml

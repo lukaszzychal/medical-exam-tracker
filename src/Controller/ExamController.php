@@ -5,8 +5,9 @@ namespace App\Controller;
 use App\Entity\Exam;
 use App\Repository\ExamRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\{Request, Response};
 use Symfony\Component\Routing\Attribute\Route;
+use App\Service\ParameterManager;
 
 class ExamController extends AbstractController
 {
@@ -23,8 +24,8 @@ class ExamController extends AbstractController
     #[Route('/exam/{id}', name: 'app_exam_show', methods: ['GET', 'POST'])]
     public function show(
         Exam $exam,
-        \Symfony\Component\HttpFoundation\Request $request,
-        \App\Service\ParameterManager $parameterManager,
+        Request $request,
+        ParameterManager $parameterManager,
     ): Response {
         $form = $this->createForm(\App\Form\ParameterType::class);
         $form->handleRequest($request);
