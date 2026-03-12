@@ -20,11 +20,27 @@ class ExamController extends AbstractController
         ]);
     }
 
-    #[Route('/exam/{id}', name: 'app_exam_show', methods: ['GET'])]
-    public function show(Exam $exam): Response
-    {
+    #[Route('/exam/{id}', name: 'app_exam_show', methods: ['GET', 'POST'])]
+    public function show(
+        Exam $exam,
+        \Symfony\Component\HttpFoundation\Request $request,
+        \App\Service\ParameterManager $parameterManager,
+    ): Response {
+        $form = $this->createForm(\App\Form\ParameterType::class);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            /* @var array{name: string, value: float} $data */
+            $data = $form->getData();
+
+            $parameterManager->addParameterToExam($exam, $data);
+
+            return $this->redirectToRoute('app_exam_show', ['id' => $exam->getId()]);
+        }
+
         return $this->render('exam/show.html.twig', [
             'exam' => $exam,
+            'form' => $form,
         ]);
     }
 }
