@@ -3,65 +3,71 @@
 {% block title %}Exam Details - {{ exam.name }}{% endblock %}
 
 {% block body %}
-<div class="container mt-4">
-    <div class="mb-3">
+    <nav class="mb-3" aria-label="breadcrumb">
         <a href="{{ path('app_exam_index') }}" class="btn btn-secondary">&laquo; Back to list</a>
-    </div>
+    </nav>
 
-    <h1>Exam Details</h1>
-    <h2>{{ exam.name }}</h2>
-    <p class="text-muted">Created: {{ exam.createDt|date('Y-m-d H:i') }}</p>
-    
-    {% if exam.description %}
-        <div class="card mb-4">
-            <div class="card-body">
-                {{ exam.description }}
-            </div>
-        </div>
-    {% endif %}
-
-    <h3 class="mt-4">Parameters</h3>
-    
-    <table class="table table-striped mt-3">
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>Value</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for parameter in exam.parameters %}
-                <tr>
-                    <td>{{ parameter.name }}</td>
-                    <td>{{ parameter.value }}</td>
-                </tr>
-            {% else %}
-                <tr>
-                    <td colspan="2" class="text-center">No parameters found.</td>
-                </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-
-    <div class="card mt-5">
-        <div class="card-header bg-light">
-            <h4 class="mb-0">Add New Parameter</h4>
-        </div>
-        <div class="card-body">
-            {{ form_start(form) }}
-                <div class="row">
-                    <div class="col-md-5">
-                        {{ form_row(form.name) }}
-                    </div>
-                    <div class="col-md-5">
-                        {{ form_row(form.value) }}
-                    </div>
-                    <div class="col-md-2 d-flex align-items-end">
-                        <button type="submit" class="btn btn-primary w-100 mb-3">Add Parameter</button>
-                    </div>
+    <article>
+        <header>
+            <h1>Exam Details</h1>
+            <h2>{{ exam.name }}</h2>
+            <p class="text-muted">Created: {{ exam.createDt|date('Y-m-d H:i') }}</p>
+        </header>
+        
+        {% if exam.description %}
+            <section class="card mb-4" aria-labelledby="exam-description">
+                <div class="card-body" id="exam-description">
+                    {{ exam.description }}
                 </div>
-            {{ form_end(form) }}
-        </div>
-    </div>
-</div>
+            </section>
+        {% endif %}
+
+        <section class="mt-4" aria-labelledby="exam-parameters">
+            <header>
+                <h3 id="exam-parameters">Parameters</h3>
+            </header>
+            
+            <table class="table table-striped mt-3">
+                <thead>
+                    <tr>
+                        <th scope="col">Name</th>
+                        <th scope="col">Value</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for parameter in exam.parameters %}
+                        <tr>
+                            <td>{{ parameter.name }}</td>
+                            <td>{{ parameter.value }}</td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="2" class="text-center">No parameters found.</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </section>
+
+        <section class="card mt-5" aria-labelledby="add-parameter-heading">
+            <header class="card-header bg-light">
+                <h4 class="mb-0" id="add-parameter-heading">Add New Parameter</h4>
+            </header>
+            <div class="card-body">
+                {{ form_start(form) }}
+                    <div class="row">
+                        <div class="col-md-5">
+                            {{ form_row(form.name) }}
+                        </div>
+                        <div class="col-md-5">
+                            {{ form_row(form.value) }}
+                        </div>
+                        <div class="col-md-2 d-flex align-items-end">
+                            <button type="submit" class="btn btn-primary w-100 mb-3">Add Parameter</button>
+                        </div>
+                    </div>
+                {{ form_end(form) }}
+            </div>
+        </section>
+    </article>
 {% endblock %}
