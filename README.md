@@ -29,7 +29,12 @@ A medical application for tracking exams and parameters, based on the latest tec
    ```bash
    docker compose exec php composer install
    ```
-4. Prepare structure and execute DB migrations in the dev environment:
+4. Build front-end assets (Stimulus & SCSS compilation):
+   ```bash
+   docker compose exec php bin/console importmap:install
+   docker compose exec php bin/console sass:build
+   ```
+5. Prepare structure and execute DB migrations in the dev environment:
    ```bash
    # Or use shortcut: composer db:migrate
    docker compose exec php bin/console doctrine:database:create --if-not-exists
@@ -72,7 +77,12 @@ Aplikacja medyczna do śledzenia badań oraz parametrów, oparta o najnowszy sta
    ```bash
    docker compose exec php composer install
    ```
-4. Przygotuj strukturę i wykonaj migracje BD w środowisku developerskim:
+4. Zbuduj zasoby front-endowe (Pobranie Stimulusa & Kompilacja SCSS):
+   ```bash
+   docker compose exec php bin/console importmap:install
+   docker compose exec php bin/console sass:build
+   ```
+5. Przygotuj strukturę i wykonaj migracje BD w środowisku developerskim:
    ```bash
    # Lub użyj skrótu: composer db:migrate
    docker compose exec php bin/console doctrine:database:create --if-not-exists
